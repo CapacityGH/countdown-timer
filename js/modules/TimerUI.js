@@ -1,7 +1,10 @@
-export default class Timer {
-    constructor(root, initialMinutes = 0) {
-        root.innerHTML = Timer.getHTML();
+import TimerLogic from "./TimerLogic.js";
 
+export default class TimerUI {
+    constructor(root, initialMinutes = 0) {
+        root.innerHTML = TimerUI.getHTML();
+
+        this.logic = new TimerLogic(initialMinutes);
         this.el = {
             minutes: root.querySelector(".timer__part--minutes"),
             seconds: root.querySelector(".timer__part--seconds"),
@@ -9,24 +12,21 @@ export default class Timer {
             reset: root.querySelector(".timer__btn--reset"),
         };
 
-        this.interval = null;
-        this.remainingSeconds = initialMinutes * 60;
+        this.updateTime();
+        this.updateControls();
 
         this.el.control.addEventListener("click", () => this.toggle());
-
         this.el.reset.addEventListener("click", () => this.reset());
     }
-    // Update the timer display
-    updateInterfaceTime() {
-        const minutes = Math.floor(this.remainingSeconds / 60);
-        const seconds = this.remainingSeconds % 60;
+
+    updateTime() {
+        const { minutes, seconds } = this.logic.getRemainingTime();
         this.el.minutes.textContent = minutes.toString().padStart(2, "0");
         this.el.seconds.textContent = seconds.toString().padStart(2, "0");
     }
 
-    // Update control button
-    updateInterfaceControls() {
-        if (this.interval === null) {
+    updateControls() {
+        if (this.logic.interval === null) {
             this.el.control.innerHTML = `<span class="material-icons">play_arrow</span>`;
             this.el.control.classList.add("timer__btn--start");
             this.el.control.classList.remove("timer__btn--stop");
@@ -37,59 +37,35 @@ export default class Timer {
         }
     }
 
-    // Toggle between start and stop
     toggle() {
-        if (this.interval === null) {
-            this.start();
+        if (this.logic.interval === null) {
+            this.logic.start(() => this.updateTime());
         } else {
-            this.stop();
+            this.logic.stop();
         }
+        this.updateControls();
     }
 
-    // Reset the timer with user input
     reset() {
-        const inputMinutes = prompt("Enter the number of minutes (0-59):");
+        const inputMinutes = parseInt(
+            prompt("Enter the number of minutes (0-59):"),
+            10
+        );
 
         if (inputMinutes < 60) {
-            this.stop();
-            this.remainingSeconds = inputMinutes * 60;
-            this.updateInterfaceTime();
+            this.logic.reset(inputMinutes);
+            this.updateTime();
+        } else {
+            alert("Please enter a valid number between 0 and 59.");
         }
     }
 
-    // Start the timer
-    start() {
-        if (this.remainingSeconds === 0) return;
-
-        this.interval = setInterval(() => {
-            this.remainingSeconds--;
-            this.updateInterfaceTime();
-
-            if (this.remainingSeconds === 0) {
-                this.stop();
-            }
-        }, 1000);
-
-        this.updateInterfaceControls();
-    }
-
-    // Stop the timer
-    stop() {
-        clearInterval(this.interval);
-        this.interval = null;
-        this.updateInterfaceControls();
-    }
-
-    // HTML structure generating
     static getHTML() {
         return ` 
-			<span class="timer__part timer__part--minutes">00</span>
+            <span class="timer__part timer__part--minutes">00</span>
             <span class="timer__part">:</span>
             <span class="timer__part timer__part--seconds">00</span>
-            <button
-                type="button"
-                class="timer__btn timer__btn--control timer__btn--start"
-            >
+            <button type="button" class="timer__btn timer__btn--control timer__btn--start">
                 <span class="material-icons"> play_arrow </span>
             </button>
             <button type="button" class="timer__btn timer__btn--reset">
