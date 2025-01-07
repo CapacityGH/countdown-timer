@@ -1,6 +1,28 @@
 export default class Timer {
     constructor(root) {
         root.innerHTML = Timer.getHTML();
+
+        this.el = {
+            minutes: root.querySelector(".timer__part--minutes"),
+            seconds: root.querySelector(".timer__part--seconds"),
+            control: root.querySelector(".timer__btn--control"),
+            reset: root.querySelector(".timer__btn--reset"),
+        };
+
+        this.interval = null;
+        this.remainingSeconds = 0;
+
+        this.el.control.addEventListener("click", () => {
+            // TODO: Add in the code
+        });
+
+        this.el.reset.addEventListener("click", () => {
+            // TODO: Add in the code
+        });
+    }
+
+    updateInterfaceTime() {
+        // TODO: Add in the code
     }
 
     static getHTML() {
