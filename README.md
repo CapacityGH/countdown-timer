@@ -26,7 +26,7 @@ This is a simple countdown timer application built with HTML, CSS, and JavaScrip
 5. Reset the timer to a new value whenever needed.
 
 ## Screenshots
-![Timer Screenshot](assets/countdown-timer.png)
+![Timer Screenshot](assets/countdown-timer-screenshot.png)
 
 ## Contributions
 Feel free to fork the repository and submit pull requests for improvements.
