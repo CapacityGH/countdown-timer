@@ -10,7 +10,7 @@ export default class Timer {
         };
 
         this.interval = null;
-        this.remainingSeconds = 0;
+        this.remainingSeconds = 90;
 
         this.el.control.addEventListener("click", () => {
             // TODO: Add in the code
@@ -19,10 +19,15 @@ export default class Timer {
         this.el.reset.addEventListener("click", () => {
             // TODO: Add in the code
         });
+
+        this.updateInterfaceTime();
     }
 
     updateInterfaceTime() {
-        // TODO: Add in the code
+        const minutes = Math.floor(this.remainingSeconds / 60);
+        const seconds = this.remainingSeconds % 60;
+        this.el.minutes.textContent = minutes.toString().padStart(2, "0");
+        this.el.seconds.textContent = seconds.toString().padStart(2, "0");
     }
 
     static getHTML() {
